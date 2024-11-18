@@ -1,0 +1,52 @@
+import pandas as pd
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+from sklearn.preprocessing import StandardScaler
+from sklearn.mixture import GaussianMixture
+from sklearn.metrics.cluster import adjusted_rand_score
+import warnings
+
+warnings.filterwarnings("ignore")
+
+# Load the Iris dataset
+iris = pd.read_csv("https://media.githubusercontent.com/media/neurospin/pystatsml/refs/heads/master/datasets/iris.csv")
+print(iris)
+
+# Data preprocessing
+x = iris.iloc[:, :4]
+y = iris.iloc[:, -1]
+sc = StandardScaler()
+sc.fit(x)
+std_array = sc.transform(x)
+X = pd.DataFrame(std_array, columns=x.columns)
+
+# Gaussian Mixture Model clustering
+cluster = GaussianMixture(n_components=3)
+cluster.fit(X)
+y_pred = cluster.predict(X)
+score = adjusted_rand_score(y, y_pred)
+print("Adjusted Rand Score:", score)
+
+# PCA for dimensionality reduction
+from sklearn.decomposition import PCA
+pca = PCA(n_components=2)
+pca_array = pca.fit_transform(X)  # Use the standardized data
+pca_df = pd.DataFrame(pca_array, columns=["PC1", "PC2"])
+
+col_code = {0: "yellow", 1: "darkblue", 2: "green"}
+label = {0: "setosa", 1: "versicolor", 2: "virginica"}
+
+pca_df["labels"] = pd.DataFrame(y_pred)
+groups = pca_df.groupby('labels')
+
+# Plotting
+fig, ax = plt.subplots(1, 1, figsize=(15, 10))
+for name, group in groups:
+    ax.plot(group.PC1, group.PC2, color=col_code[name], label=label[name], marker='o', linestyle="", ms=10)
+
+ax.legend()
+plt.title("PCA of Iris Dataset with GMM Clusters")
+plt.xlabel("Principal Component 1")
+plt.ylabel("Principal Component 2")
+plt.show()

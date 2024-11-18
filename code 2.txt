@@ -1,0 +1,58 @@
+# Importing libraries
+from scipy.stats import skew, kurtosis
+import matplotlib.pyplot as plt
+import scipy.stats as stats
+import pandas as pd
+import numpy as np
+
+# Create the CSV file (for testing purposes, you can skip this if you already have the file)
+data = {
+    "Student Name": ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O"],
+    "Math Score": [78, 85, 90, 72, 88, 95, 80, 83, 89, 92, 87, 79, 91, 94, 82]
+}
+df = pd.DataFrame(data)
+df.to_csv("score.csv", index=False)  # Save data as a CSV file
+
+# Load the CSV file
+try:
+    df = pd.read_csv("score.csv")  # Load the CSV
+    print("CSV loaded successfully.")
+except FileNotFoundError:
+    print("Error: 'score.csv' not found.")
+    exit()
+
+# Extract the Math Score column
+try:
+    x = df['Math Score'].dropna().to_numpy()[:15]  # Take the first 15 scores
+    x.sort()  # Sort the scores
+except KeyError:
+    print("Error: Column 'Math Score' not found in CSV.")
+    exit()
+
+# Calculate basic statistics
+mean = np.mean(x)
+sd = np.std(x, ddof=1)  # Sample standard deviation
+median = np.median(x)
+
+# Fit the normal distribution
+fit = stats.norm.pdf(x, mean, sd)
+
+# Visualization
+plt.hist(x, density=True, color="yellow", ec="white", bins=6, alpha=0.7, label="Histogram")
+plt.plot(x, fit, "go--", label="Normal Distribution")
+plt.title("Math Scores Distribution")
+plt.xlabel("Marks")
+plt.ylabel("Density")
+plt.legend()
+plt.show()
+
+# Calculate Skewness and Kurtosis
+skewness_value = skew(x)
+kurtosis_value = kurtosis(x, fisher=False)
+
+# Print results
+print(f"Mean: {mean}")
+print(f"Median: {median}")
+print(f"Standard Deviation: {sd}")
+print(f"Skewness: {skewness_value}")
+print(f"Kurtosis: {kurtosis_value}")
