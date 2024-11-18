@@ -1,0 +1,43 @@
+import pandas as pd
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Seed for reproducibility
+np.random.seed(42)
+
+# Create synthetic data for mother's age, weight, and infant's birth weight
+n = 100  # Number of samples
+
+# Generating random data
+age = np.random.randint(18, 45, size=n)  # Age between 18 and 45
+lwt = np.random.randint(90, 200, size=n)  # Mother's weight between 90 and 200 pounds
+bwt = 2500 + (age * 10) - (lwt * 2) + np.random.normal(0, 500, size=n)  # Birth weight depends on age and weight with some noise
+
+# Create a DataFrame
+data = pd.DataFrame({
+    'age': age,
+    'lwt': lwt,
+    'bwt': bwt
+})
+
+# Plot 1: Age vs Birth Weight
+plt.figure(figsize=(12, 6))
+
+plt.subplot(1, 2, 1)
+sns.scatterplot(x=data['age'], y=data['bwt'])
+plt.title('Age vs Birth Weight')
+plt.xlabel('Mother\'s Age')
+plt.ylabel('Birth Weight')
+
+# Plot 2: Mother's Weight vs Birth Weight
+plt.subplot(1, 2, 2)
+sns.scatterplot(x=data['lwt'], y=data['bwt'])
+plt.title('Mother\'s Weight vs Birth Weight')
+plt.xlabel('Mother\'s Weight')
+plt.ylabel('Birth Weight')
+
+plt.tight_layout()
+
+# Display the plots without saving them as a file
+plt.show()
