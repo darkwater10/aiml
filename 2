@@ -1,0 +1,42 @@
+import matplotlib.pyplot as plt
+import numpy as np
+from scipy.stats import skew, kurtosis, norm  # Correct import
+
+'''
+np.random.seed(10)
+x = np.random.randint(10,70,16)
+
+number = int(input(print("Enter no of students: ")))
+marklist = []
+for i in range(number):
+    num = float(input(f"Enter marks of Roll Number {i+1}: "))
+    marklist.append(num)
+
+x= np.array(marklist) '''
+x = np.array([60, 70, 75, 80, 50, 72, 78, 65, 75, 92, 82, 68, 71, 77, 76, 84])
+
+
+mean = np.mean(x)
+standard_deviation = np.std(x, ddof=1)
+
+skewness_value = skew(x)
+kurtosis_value = kurtosis(x)
+
+''' Print the results
+print("Mean:", mean)
+print("Standard Deviation:", standard_deviation)
+'''
+print("Skewness:", skewness_value)
+print("Kurtosis:", kurtosis_value)
+
+x_sorted = np.sort(x)
+fit = norm.pdf(x_sorted, mean, standard_deviation)
+
+plt.hist(x, density=True, color="maroon", ec="white")
+plt.plot(x_sorted, fit, "go-", label="Normal Distribution")
+plt.title("Distribution of Math Scores")
+plt.xlabel("Marks")
+plt.ylabel("Density")
+plt.legend()
+#plt.grid(True)
+plt.show()
